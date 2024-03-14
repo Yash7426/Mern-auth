@@ -1,42 +1,41 @@
-import { useEffect }from 'react'
-import { useWorkoutsContext } from "../hooks/useWorkoutsContext"
-import { useAuthContext } from "../hooks/useAuthContext"
+import { useEffect } from "react";
+import { useTasksContext } from "../hooks/usetasksContext";
+import { useAuthContext } from "../hooks/useAuthContext";
+import TaskDetails from "../components/TaskDetails";
+import TaskForm from "../components/TaskForm";
 
 // components
-import WorkoutDetails from '../components/WorkoutDetails'
-import WorkoutForm from '../components/WorkoutForm'
 
 const Home = () => {
-  const {workouts, dispatch} = useWorkoutsContext()
-  const {user} = useAuthContext()
+  const { tasks, dispatch } = useTasksContext();
+  const { user } = useAuthContext();
 
   useEffect(() => {
-    const fetchWorkouts = async () => {
-      const response = await fetch('/api/workouts', {
-        headers: {'Authorization': `Bearer ${user.token}`},
-      })
-      const json = await response.json()
+    const fetchTasks = async () => {
+      const response = await fetch("/api/tasks", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      const json = await response.json();
 
       if (response.ok) {
-        dispatch({type: 'SET_WORKOUTS', payload: json})
+        dispatch({ type: "SET_TASKS", payload: json });
       }
-    }
+    };
 
     if (user) {
-      fetchWorkouts()
+      fetchTasks();
     }
-  }, [dispatch, user])
+  }, [dispatch, user]);
 
   return (
     <div className="home">
-      <div className="workouts">
-        {workouts && workouts.map((workout) => (
-          <WorkoutDetails key={workout._id} workout={workout} />
-        ))}
+      <div className="tasks">
+        {tasks &&
+          tasks.map((task) => <TaskDetails key={task._id} task={task} />)}
       </div>
-      <WorkoutForm />
+      <TaskForm />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
